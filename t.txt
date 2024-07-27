@@ -1,0 +1,257 @@
+extends Node2D
+
+var t: float = 0
+var r: PackedVector2Array = [Vector2(0,100),Vector2(100,100),Vector2(100,0),Vector2(0,0),Vector2(0,-100),Vector2(-100,100),Vector2(-100,00),Vector2(100,-100),Vector2(-100,-100)]
+var current_target: int = 0
+
+func _process(delta):
+	if t < 1:
+		t += delta * 0.4
+		$Sprite2D.position = r[current_target].lerp(r[(current_target + 1) % r.size()], t)
+	else:
+		t = 0
+		current_target = (current_target + 1) % r.size()
+
+rotation.y = atan2(direction.x,direction.z)
+rotation.x = atan2(-direction.y,Vector2(direction.z,direction.x).length())
+
+
+extends CharacterBody3D
+
+@onready var v_to:PackedVector3Array = [Vector3(0, PI, 0), Vector3(0, -PI, 0)]
+var i:int = 0
+var s
+func _ready():
+	s = (v_to[i] - rotation)
+func _process(delta):
+	s = (v_to[i] - rotation)
+	if abs(s.length())>=0.02 :
+		rotation += s.normalized() * delta * 2
+	else:
+		i = (i + 1) % v_to.size()
+
+
+	if Input.is_action_pressed("crouch") or ($crouch_ray.is_colliding()and is_on_floor()) and !jumped:
+		scale.y = 0.5
+		canslide = true
+		c_mode = crouchstate.crouching
+		if canslide and get_floor_angle() > slidingsloprrad:
+			slide()
+			sliding = true
+	elif !Input.is_action_pressed("crouch") and !slide():
+		scale.y = 1
+		sliding = false
+		canmove = true
+		canjump = true
+		c_mode = crouchstate.standing
+extends CanvasLayer
+
+signal button_pressed(title: String)
+
+var t:String = ""
+var keyn:String = ""
+var index:int = 0
+var buttons:Array =[]
+@onready var backround = $backround
+@onready var label = $RichTextLabel
+var listed_pause_char = ".!?,"
+var typing = false
+var dic:Dictionary = {}
+func _ready():
+	def_dio()
+	Dialogue.connect("Dial",Callable(self,"dio_start"))
+func dio_start(key,d_file):
+	if keyn == "":
+		backround.visible = true
+		var f = FileAccess.open(d_file,FileAccess.READ)
+		dic = JSON.parse_string(f.get_as_text())
+		f.close()
+		label.text = dic[key][index]
+		label.visible_characters = 0
+		typing = true
+		keyn = key
+		get_tree().paused = true
+func _process(delta):
+	print(keyn)
+	if typing == true:
+		if label.visible_characters > label.get_total_character_count():
+			if Input.is_action_just_pressed("ui_accept")and keyn in dic:
+				label.visible_characters = 0
+				index += 1
+				if typeof(dic[keyn][index])== TYPE_STRING and index < dic[keyn].size()-1:
+					label.text = dic[keyn][index]
+				elif typeof(dic[keyn][index])== TYPE_DICTIONARY:
+					dic= dic[keyn][index]
+					index= -1
+					keyn = t
+					label.text = dic[keyn][index] if t in dic.keys() else ""
+					choice(dic)
+				else:
+					def_dio()
+		else:
+			label.visible_characters += 1
+			$AudioStreamPlayer.play()
+func def_dio():
+	backround.visible = false
+	label.text = ""
+	typing = false
+	keyn = ""
+	get_tree().paused = false
+	index = 0
+func choice(de:Dictionary):
+	var y_position = 0
+	for i in de.keys():
+		var button = Button.new()
+		button.size = Vector2(20,5)
+		button.flat = true
+		button.position = backround.position + Vector2(10, y_position * 30 + 20)
+		button.connect("pressed", Callable(self, "_on_Button_pressed").bind(i))
+		button.text = "-" + i
+		add_child(button)
+		buttons.append(button)
+		y_position += 1
+func clear_choice():
+	for i in buttons:
+		i.call_deferred("free")
+	buttons.clear()
+	t = ""
+func _on_Button_pressed(title):
+	t = title
+	emit_signal("button_pressed", title)
+	keyn = title
+	index = 0
+	if keyn in dic:
+		if label.text == dic[keyn][index]:
+			label.visible_characters = 0
+		label.text = dic[keyn][index]
+		typing = true
+		clear_choice()
+	else:
+		def_dio()
+		clear_choice()
+
+
+extends Node2D
+
+signal button_pressed(title: String)
+
+var t:String = ""
+var keyn:String = ""
+var index:int = 0
+var buttons:Array =[]
+@onready var backround = $backround
+@onready var label = $RichTextLabel
+var listed_pause_char = ".!?,"
+var typing = false
+var dic:Dictionary = {}
+func _ready():
+	def_dio()
+	Dialogue.connect("Dial",Callable(self,"dio_start"))
+func dio_start(key,d_file):
+	if keyn == "":
+		backround.visible = true
+		var f = FileAccess.open(d_file,FileAccess.READ)
+		dic = JSON.parse_string(f.get_as_text())
+		f.close()
+		label.text = dic[key][index]
+		label.visible_characters = 0
+		typing = true
+		keyn = key
+		get_tree().paused = true
+func _process(delta):
+	print(keyn)
+	if typing == true:
+		if label.visible_characters > label.get_total_character_count():
+			if Input.is_action_just_pressed("check")and keyn in dic:
+				label.visible_characters = 0
+				index += 1
+				if typeof(dic[keyn][index])== TYPE_STRING and index < dic[keyn].size()-1:
+					label.text = dic[keyn][index]
+				elif typeof(dic[keyn][index])== TYPE_DICTIONARY:
+					Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+					dic= dic[keyn][index]
+					index= -1
+					keyn = t
+					label.text = dic[keyn][index] if t in dic.keys() else ""
+					choice(dic)
+				else:
+					def_dio()
+		else:
+			label.visible_characters += 1
+			$AudioStreamPlayer.play()
+func def_dio():
+	backround.visible = false
+	label.text = ""
+	typing = false
+	keyn = ""
+	get_tree().paused = false
+	index = 0
+func choice(de:Dictionary):
+	var y_position = 0
+	for i in de.keys():
+		var button = Button.new()
+		button.size = Vector2(20,5)
+		button.flat = true
+		button.position = backround.position + Vector2(10, y_position * 30 + 20)
+		button.connect("pressed", Callable(self, "_on_Button_pressed").bind(i))
+		button.text = "-" + i
+		add_child(button)
+		buttons.append(button)
+		y_position += 1
+	buttons[0].grab_focus()
+func clear_choice():
+	for i in buttons:
+		i.call_deferred("free")
+	buttons.clear()
+	t = ""
+func _on_Button_pressed(title):
+	t = title
+	emit_signal("button_pressed", title)
+	keyn = title
+	index = 0
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	if keyn in dic:
+		if label.text == dic[keyn][index]:
+			label.visible_characters = 0
+		label.text = dic[keyn][index]
+		typing = true
+		clear_choice()
+	else:
+		def_dio()
+		clear_choice()
+
+func choice(de:Dictionary):
+	var y_position = 0
+	for i in de.keys():
+		var button = Button.new()
+		button.size = Vector2(20,5)
+		button.flat = true
+		#backround.position + Vector2(...)
+		button.position = Vector2(10, y_position * 30 + 20)
+		button.connect("pressed", Callable(self, "_on_Button_pressed").bind(i))
+		button.text = "-" + i
+		add_child(button)
+		buttons.append(button)
+		y_position += 1
+	buttons[0].grab_focus()
+func clear_choice():
+	for i in buttons:
+		i.call_deferred("free")
+	buttons.clear()
+	t = ""
+func _on_Button_pressed(title):
+	timer = get_tree().create_timer(1)
+	t = title
+	emit_signal("button_pressed", title)
+	keyn = title
+	index = 0
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	if keyn in dic:
+		if label.text == dic[keyn][index]:
+			label.visible_characters = 0
+		label.text = dic[keyn][index]
+		typing = true
+		clear_choice()
+	else:
+		def_dio()
+		clear_choice()

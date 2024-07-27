@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://dooavjgl4r2ud"]
+
+[ext_resource type="Script" path="res://scripts/general/scene_manager.gd" id="1_ps5kv"]
+[ext_resource type="PackedScene" uid="uid://y6i6ik81un4j" path="res://instances/scene_1.tscn" id="2_im5hp"]
+[ext_resource type="PackedScene" uid="uid://c0fs1jre2chd3" path="res://instances/player.tscn" id="3_3fi4x"]
+
+[node name="scene_manager" type="Node3D"]
+script = ExtResource("1_ps5kv")
+
+[node name="scene_1" parent="." instance=ExtResource("2_im5hp")]
+
+[node name="player" parent="." instance=ExtResource("3_3fi4x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0452368, 1.48432, -0.0484629)
+maxisafefalldistance = 10.0
+bobamp = 0.5
