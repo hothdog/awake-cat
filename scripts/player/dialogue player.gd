@@ -24,7 +24,7 @@ func dio_start(key,d_file):
 		f.close()
 		if typeof(dic[key][index])==TYPE_DICTIONARY:
 			if dic[key][index].has("voice"):
-				$AudioStreamPlayer.stream = load("dic[key][index]")
+				$AudioStreamPlayer.stream = load(dic[key][index]["voice"])
 			else:
 				$AudioStreamPlayer.stream = load("res://resourses/basic_hi1.mp3")
 			if dic[key][index].has("time"):
@@ -82,6 +82,7 @@ func def_dio():
 	keyn = ""
 	#get_tree().paused = false
 	index = 0
+
 #func choice(de:Dictionary):
 	#var y_position = 0
 	#for i in de.keys():

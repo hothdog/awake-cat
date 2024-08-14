@@ -4,7 +4,7 @@
 		"and shift to crouch so you can enter vents",
 		"just like an impostor",""],
 	"scene1_begins":
-		[{"text":"hello........","time":4},
+		[{"text":"hello........","time":2,"voice":"res://resourses/basic_hi4.mp3"},
 		{"text":"welcome to the alpha!",
 		"voice":"res://resourses/basic_hi3.mp3"},
 		"do you wanna know the contorls?",

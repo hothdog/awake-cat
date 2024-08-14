@@ -6,6 +6,9 @@ var next_level = null
 
 func _ready() -> void:
 	current_level.connect("level_changed", Callable(self, "handle_level_changed"))
+	$AnimationPlayer.play("new_animation")
+	if has_node("start_1"):
+		$start_1.queue_free()
 func handle_level_changed(target_id:String):
 	$CanvasLayer/AnimationPlayer.play_backwards("scene_fading")
 	await $CanvasLayer/AnimationPlayer.animation_finished
@@ -19,3 +22,5 @@ func handle_level_changed(target_id:String):
 	current_level.level_id = next_level_id
 	next_level.connect("level_changed", Callable(self, "handle_level_changed"))
 	$CanvasLayer/AnimationPlayer.play("scene_fading")
+func d():
+	Dialogue.emit_signal("Dial","scene1_begins","res://resourses/txt.json")

@@ -25,6 +25,7 @@ signal foundcheck
 var speed:float
 var slidespeed:float
 
+var currentstephight:float
 var canslide:bool
 var cansprint:bool
 var canmove:bool = true
@@ -64,10 +65,9 @@ func _ready() -> void:
 	falldistance = gravec.y
 	speed = minispeed
 	energyvalue = max_energy
-	#Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	cansprinttimer = get_tree().create_timer(0.25)
 	rotation.y = deg_to_rad(-180)
-	Dialogue.emit_signal("Dial","scene1_begins","res://resourses/txt.json")
 	
 func _input(event):
 	if event is InputEventMouseMotion:
@@ -179,22 +179,26 @@ func crouch():
 		tw = create_tween()
 		tw.tween_property($cambase,"position:y",$CollisionShape3D.position.y*1.5,0.2)
 	$CollisionShape3D.position.y = $CollisionShape3D.shape.size.y /2
+	$ShapeCast3D.shape.radius = 0.5
+	$ShapeCast3D.position = $cambase.position + Vector3(Input.get_axis("left","right"),0,Input.get_axis("forward","backward")).normalized()
+	$ShapeCast3D.target_position.y =-$CollisionShape3D.position.y +0.3
 	match c_mode:
 		crouchstate.standing:
 			$CollisionShape3D.shape.size.y = defheight
 			$crouch_ray.shape.size.y = 0
-			$crouch_ray.position.y = defheight + $crouch_ray.shape.size.y / 2
+			$crouch_ray.position.y = defheight+ $crouch_ray.shape.size.y / 2
 			$check_ray.position.y = $cambase.position.y
-			maxstephight = 0.5
+			maxstephight = 2
+			canslide = false
 			sliding = false
 			canmove = true
 			canjump = true
 		crouchstate.crouching:
+			maxstephight = 0.7
 			$check_ray.position.y = $cambase.position.y
 			$CollisionShape3D.shape.size.y = crouchheight
 			$crouch_ray.shape.size.y = defheight - crouchheight
 			$crouch_ray.position.y = crouchheight + $crouch_ray.shape.size.y / 2
-			maxstephight = 0.25
 			canslide = true
 			slide()
 	
@@ -207,14 +211,6 @@ func check():
 		if Input.is_action_just_pressed("check"):
 			headray.get_collider().call("interact")
 			
-func step(delta:float):
-	var collision = move_and_collide(velocity*delta,true,0.001,2)
-	if collision:
-		if collision.get_normal().y < 0.5:
-			if collision.get_position() and is_on_floor():
-				if collision.get_position().y - position.y < maxstephight and collision.get_position().y - position.y > 0.05:
-					velocity.y = collision.get_position().y-position.y *10
-					
 func camanimF(delta)->Vector3:
 	var camanimV:Vector3 = Vector3(0,bobamp*sin(bobbers*bobfreq),0)
 	var robob:float
@@ -227,3 +223,9 @@ func camanimF(delta)->Vector3:
 			cam.rotation.x += robob 
 	else:robob = 0
 	return camanimV
+func step(delta):
+	if $ShapeCast3D.is_colliding():
+		var np =to_local($ShapeCast3D.get_collision_point(0))
+		if is_on_floor():
+			if np.y < maxstephight:
+				position.y += (np.y)+0.1

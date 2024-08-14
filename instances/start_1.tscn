@@ -467,3 +467,7 @@ nextro = "start_2"
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_537lg")
+
+[node name="nexter2" parent="." instance=ExtResource("2_5qch1")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 10.2665, 2.30568, -14.0582)
+nextro = "start_0"

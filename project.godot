@@ -23,7 +23,7 @@ buses/default_bus_layout="res://resourses/default_bus_layout.tres"
 
 [autoload]
 
-Dialogue="*res://scripts/general/dialogue.gd"
+Dialogue="*res://scripts/general/signal_list.gd"
 
 [display]
 
@@ -32,6 +32,15 @@ window/stretch/mode="canvas_items"
 [dotnet]
 
 project/assembly_name="ycfg_alpha"
+
+[editor]
+
+version_control/plugin_name="GitPlugin"
+version_control/autoload_on_startup=true
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/csgtomesh/plugin.cfg")
 
 [file_customization]
 

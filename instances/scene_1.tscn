@@ -202,7 +202,7 @@ light_volumetric_fog_energy = 0.0
 omni_range = 16.512
 
 [node name="OmniLight3D3" type="OmniLight3D" parent="lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.09694, 15.0129, 159.036)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.4996, 4.42985, 200.579)
 light_energy = 16.0
 light_indirect_energy = 8.407
 light_volumetric_fog_energy = 0.0
