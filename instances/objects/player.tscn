@@ -1,0 +1,118 @@
+[gd_scene load_steps=10 format=3 uid="uid://c0fs1jre2chd3"]
+
+[ext_resource type="Script" path="res://scripts/player/player.gd" id="1_vij0w"]
+[ext_resource type="Script" path="res://scripts/player/hud_layer.gd" id="2_a6w1d"]
+[ext_resource type="Script" path="res://scripts/player/dialogue player.gd" id="3_uwj7y"]
+[ext_resource type="AudioStream" uid="uid://cwd00axcpbv86" path="res://resourses/sfx/voices(acting)/basic_hi1.mp3" id="4_jv67f"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_oqxgy"]
+margin = 0.0
+size = Vector3(1, 5, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_j2nlt"]
+size = Vector3(1, 2, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wmc5m"]
+size = Vector3(0.92, 0, 0.92)
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_u2bil"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_8uxhs"]
+
+[node name="player" type="CharacterBody3D"]
+transform = Transform3D(0.998765, 0, -0.0496865, 0, 1, 0, 0.0496865, 0, 0.998765, 0, 0, 1.01188)
+collision_layer = 5
+script = ExtResource("1_vij0w")
+jumpness = 24.0
+minijumpness = 8.0
+minispeed = 10.0
+accelry = 300.0
+deaccelry = 300.0
+maxispeed = 20.0
+defheight = 5
+slidingsloprrad = 0.45
+maxstephight = 0.6
+bobfreq = 0.8
+bobamp = 0.5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("BoxShape3D_oqxgy")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+visible = false
+mesh = SubResource("BoxMesh_j2nlt")
+
+[node name="check_ray" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1.00001, 0, 0, 0, 1, 0, 1.75, 0)
+target_position = Vector3(0, 0, -10)
+collision_mask = 3
+hit_from_inside = true
+debug_shape_custom_color = Color(0.388235, 0.388235, 0.388235, 1)
+debug_shape_thickness = 5
+
+[node name="hud_layer" type="CanvasLayer" parent="."]
+process_mode = 3
+script = ExtResource("2_a6w1d")
+
+[node name="cross_hair" type="Polygon2D" parent="hud_layer"]
+color = Color(1, 1, 1, 0.501961)
+polygon = PackedVector2Array(-15, 0, 0, -15, 15, 0, 0, 15)
+
+[node name="energy_bar" type="Polygon2D" parent="hud_layer"]
+z_index = -1
+color = Color(0, 1, 1, 0)
+polygon = PackedVector2Array(0, 0, 0, 25, 250, 25, 250, 0)
+
+[node name="dialogue_player" type="Node2D" parent="hud_layer"]
+process_mode = 1
+position = Vector2(97, 269)
+script = ExtResource("3_uwj7y")
+
+[node name="backround" type="Polygon2D" parent="hud_layer/dialogue_player"]
+visible = false
+color = Color(0.196078, 0.227451, 0.301961, 1)
+polygon = PackedVector2Array(-1, -2, 450, -2, 450, 116, -2, 118)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="hud_layer/dialogue_player"]
+process_mode = 1
+offset_left = 197.0
+offset_top = 245.0
+offset_right = 754.0
+offset_bottom = 328.0
+bbcode_enabled = true
+text = "[center]...[/center]"
+fit_content = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="hud_layer/dialogue_player"]
+stream = ExtResource("4_jv67f")
+
+[node name="Label" type="Label" parent="hud_layer/dialogue_player"]
+visible = false
+offset_left = 336.0
+offset_top = 98.0
+offset_right = 493.0
+offset_bottom = 121.0
+theme_override_font_sizes/font_size = 10
+text = "left click to continue..."
+horizontal_alignment = 1
+
+[node name="crouch_ray" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
+shape = SubResource("BoxShape3D_wmc5m")
+target_position = Vector3(0, 0, 0)
+
+[node name="cambase" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="cambase"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
+attributes = SubResource("CameraAttributesPractical_u2bil")
+
+[node name="ShapeCast3D" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.828, -0.5)
+shape = SubResource("SphereShape3D_8uxhs")
+target_position = Vector3(0, -3, 0)
+
+[connection signal="foundcheck" from="." to="hud_layer" method="_on_player_foundcheck"]

@@ -2,8 +2,7 @@ extends Node3D
 signal level_changed(level_name)
 
 @export var level_id:String
-var level_parameters := {
-}
+var level_parameters := {}
 var pp
 func _ready():
 	get_parent().set_editable_instance(self, true)

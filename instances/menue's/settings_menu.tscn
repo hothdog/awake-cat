@@ -1,0 +1,70 @@
+[gd_scene load_steps=2 format=3 uid="uid://caidwqvp8ktup"]
+
+[ext_resource type="Script" path="res://scripts/player/settings_menu.gd" id="1_r1fq2"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_r1fq2")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_left = 79.0
+offset_top = 90.0
+offset_right = 1023.0
+offset_bottom = 526.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_stretch_ratio = 0.0
+theme_override_constants/separation = 18
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "volume: ..."
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/center_grabber = 0
+theme_override_constants/grabber_offset = 0
+step = 2.0
+value = 50.0
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "resolution"
+
+[node name="MenuButton" type="OptionButton" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+item_count = 3
+selected = 2
+fit_to_longest_item = false
+allow_reselect = true
+popup/item_0/text = "576 x 324 px"
+popup/item_0/id = 0
+popup/item_1/text = "768 x 432 px"
+popup/item_1/id = 1
+popup/item_2/text = "1152 x 648 px"
+popup/item_2/id = 2
+
+[node name="CheckBox" type="CheckBox" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "full screen"
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+text = "go back"

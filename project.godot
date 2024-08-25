@@ -13,13 +13,13 @@ config_version=5
 config/name="ycfg_alpha"
 config/version="0.0.1.0"
 config/tags=PackedStringArray("more_important")
-run/main_scene="res://instances/scene_manager.tscn"
+run/main_scene="res://instances/general/scene_manager.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
 
 [audio]
 
-buses/default_bus_layout="res://resourses/default_bus_layout.tres"
+buses/default_bus_layout="res://resourses/other resourses/default_bus_layout.tres"
 
 [autoload]
 

@@ -20,20 +20,21 @@ func dio_start(key,d_file):
 	if keyn == "":
 		#backround.visible = true
 		var f = FileAccess.open(d_file,FileAccess.READ)
-		dic = JSON.parse_string(f.get_as_text())
-		f.close()
-		if typeof(dic[key][index])==TYPE_DICTIONARY:
-			if dic[key][index].has("voice"):
-				$AudioStreamPlayer.stream = load(dic[key][index]["voice"])
+		if f:
+			dic = JSON.parse_string(f.get_as_text())
+			f.close()
+			if typeof(dic[key][index])==TYPE_DICTIONARY:
+				if dic[key][index].has("voice"):
+					$AudioStreamPlayer.stream = load(dic[key][index]["voice"])
+				else:
+					$AudioStreamPlayer.stream = load("res://resourses/sfx/voices(acting)/basic_hi1.mp3")
+				if dic[key][index].has("time"):
+					k = dic[key][index].time
+				else:
+					k = 1
 			else:
-				$AudioStreamPlayer.stream = load("res://resourses/basic_hi1.mp3")
-			if dic[key][index].has("time"):
-				k = dic[key][index].time
-			else:
+				$AudioStreamPlayer.stream = load("res://resourses/sfx/voices(acting)/basic_hi1.mp3")
 				k = 1
-		else:
-			$AudioStreamPlayer.stream = load("res://resourses/basic_hi1.mp3")
-			k = 1
 		$AudioStreamPlayer.play()
 		label.text = "[center]"+dic[key][index].text if typeof(dic[key][index])==TYPE_DICTIONARY else dic[key][index]  +"[/center]"
 		label.visible_characters = 0
@@ -48,7 +49,7 @@ func _process(_delta):
 				label.visible_characters = 0
 				index += 1
 				if typeof(dic[keyn][index])== TYPE_STRING and index < dic[keyn].size()-1:
-					$AudioStreamPlayer.stream = load("res://resourses/basic_hi1.mp3")
+					$AudioStreamPlayer.stream = load("res://resourses/sfx/voices(acting)/basic_hi1.mp3")
 					$AudioStreamPlayer.play()
 					label.text = "[center]"+ dic[keyn][index]+"[/center]"
 					k = 3
@@ -56,7 +57,7 @@ func _process(_delta):
 					if dic[keyn][index].has("voice"):
 						$AudioStreamPlayer.stream = load(str(dic[keyn][index]["voice"]))
 					else:
-						$AudioStreamPlayer.stream = load("res://resourses/basic_hi1.mp3")
+						$AudioStreamPlayer.stream = load("res://resourses/sfx/voices(acting)/basic_hi1.mp3")
 					$AudioStreamPlayer.play()
 					label.text = "[center]"+ dic[keyn][index]["text"]+"[/center]"
 					if dic[keyn][index].has("time"):

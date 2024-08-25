@@ -255,3 +255,9 @@ func _on_Button_pressed(title):
 	else:
 		def_dio()
 		clear_choice()
+
+
+
+
+player's position:
+5.878 1.6 0.317

@@ -35,6 +35,7 @@ var sprinting:bool = false
 var jumped:bool = false
 var falling:bool = false
 var sliding:bool= false
+var climbing:bool = false
 
 var bobbers:float
 
@@ -101,7 +102,7 @@ func move(delta)->void:
 			velocity.z = velocity.move_toward(Vector3.ZERO, deaccelry * delta).z
 	
 	sprint(inputmove)
-	step(delta)
+	step()
 	cam.position = camanimF(delta)
 	velocity.normalized()
 	move_and_slide()
@@ -128,17 +129,25 @@ func sprint(inputmove:Vector3)->void:
 		cansprint = false
 	
 func fall(delta:float):
-	falling = true
-	gravec.y -= gravity * delta
-	falldistance = abs(gravec.y) *delta
-	if is_on_ceiling():
-		gravec.y = -gravity * delta
-	if Input.is_action_just_released("jump")and jumped:
-		if gravec.y > minijumpness:
-			gravec.y = minijumpness
-		jumped = false
-	if is_on_floor():
-		felldown()
+	if !climbing:
+		canjump = true
+		falling = true
+		gravec.y -= gravity * delta
+		falldistance = abs(gravec.y) *delta
+		if is_on_ceiling():
+			gravec.y = -gravity * delta
+		if Input.is_action_just_released("jump")and jumped:
+			if gravec.y > minijumpness:
+				gravec.y = minijumpness
+			jumped = false
+		if is_on_floor():
+			felldown()
+	else:
+		falling = false
+		gravec.y = Input.get_axis("crouch","jump") * speed 
+		falldistance = 0
+		canjump = false
+		
 
 func felldown():
 	falling = false
@@ -170,7 +179,7 @@ func slide():
 	
 func crouch():
 	var tw:Tween
-	if Input.is_action_pressed("crouch") or $crouch_ray.is_colliding():
+	if (Input.is_action_pressed("crouch") or $crouch_ray.is_colliding())and !climbing:
 		c_mode = crouchstate.crouching
 		tw = create_tween()
 		tw.tween_property($cambase,"position:y",$CollisionShape3D.position.y*1.5,0.2)
@@ -218,12 +227,12 @@ func camanimF(delta)->Vector3:
 	bobbers += (Vector2(velocity.x,velocity.z).length()*delta+0.01)*int(is_on_floor())
 	if !is_on_floor():
 		robob = bobamp *delta*gravec.y/7.5
-		if abs(robob) > 0.025:robob = 0
+		if abs(robob) > 0.05:robob = 0
 		if cam.rotation.x <= deg_to_rad(90) and cam.rotation.x >= deg_to_rad(-90):
 			cam.rotation.x += robob 
 	else:robob = 0
 	return camanimV
-func step(delta):
+func step():
 	if $ShapeCast3D.is_colliding():
 		var np =to_local($ShapeCast3D.get_collision_point(0))
 		if is_on_floor():

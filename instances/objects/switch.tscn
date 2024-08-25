@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3 uid="uid://cjxwabjj6xiys"]
+
+[ext_resource type="Script" path="res://scripts/others/objects/switch.gd" id="1_vwgoh"]
+[ext_resource type="AudioStream" uid="uid://b2nr01rwggfn5" path="res://resourses/sfx/other/dottingdefault.mp3" id="2_w3od2"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qjy82"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1urp5"]
+albedo_color = Color(0.509804, 0.00392157, 0.945098, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_yp42d"]
+material = SubResource("StandardMaterial3D_1urp5")
+
+[node name="switch" type="StaticBody3D"]
+collision_layer = 3
+script = ExtResource("1_vwgoh")
+targets = PackedStringArray("Door")
+dio = "switch"
+d_file = "res://resourses/txt.json"
+switch_mode = "once"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_qjy82")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_yp42d")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_w3od2")

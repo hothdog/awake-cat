@@ -1,0 +1,51 @@
+[gd_scene load_steps=5 format=3 uid="uid://chbk66ygfxbwk"]
+
+[ext_resource type="Script" path="res://scripts/general/scene.gd" id="1_ssr2j"]
+[ext_resource type="PackedScene" uid="uid://bkk333r4rikwd" path="res://instances/objects/secure.tscn" id="2_eccuo"]
+[ext_resource type="PackedScene" uid="uid://wrouve7mtr3h" path="res://instances/objects/nexter.tscn" id="3_0bylc"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m2hvb"]
+albedo_color = Color(0.109804, 0.301961, 0.541176, 1)
+
+[node name="scene_2" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 0, 41.2059)
+script = ExtResource("1_ssr2j")
+level_id = "scene_2"
+
+[node name="secure" parent="." instance=ExtResource("2_eccuo")]
+
+[node name="bblocks" type="Node3D" parent="."]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="bblocks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -4.34, 92.336)
+material_override = SubResource("StandardMaterial3D_m2hvb")
+use_collision = true
+size = Vector3(100, 1, 100)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="bblocks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.94702, 18.5031, 85.7806)
+material_override = SubResource("StandardMaterial3D_m2hvb")
+use_collision = true
+size = Vector3(100, 1, 100)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="bblocks"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 33.2197, 12.6796, 85.7806)
+material_override = SubResource("StandardMaterial3D_m2hvb")
+use_collision = true
+size = Vector3(100, 1, 100)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="bblocks"]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 4.94702, 20.5031, 85.7806)
+material_override = SubResource("StandardMaterial3D_m2hvb")
+use_collision = true
+size = Vector3(100, 1, 100)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.0729, 11.8416, 80.5136)
+light_energy = 10.667
+light_indirect_energy = 2.333
+omni_range = 4096.0
+
+[node name="nexter" parent="." instance=ExtResource("3_0bylc")]
+transform = Transform3D(3, 0, 0.00355995, 0, 3, 0, -0.00355995, 0, 3, 19.1512, 2.30568, 55.9347)
+nextro = "scene_1"
